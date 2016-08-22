@@ -9,15 +9,18 @@ import {user_mocks} from './../user/user_mocks';
 import {tearDownConnections} from '../../shared_tests';
 import {Collection, Connection} from 'waterline';
 import {Server} from 'restify';
+import {IUserBase} from '../../../api/user/models.d';
 
 declare var Object: IObjectCtor;
 
-const user_models_and_routes: IModelRoute = {
+const models_and_routes: IModelRoute = {
     user: all_models_and_routes['user'],
     auth: all_models_and_routes['auth'],
 };
 
 process.env.NO_SAMPLE_DATA = true;
+
+const mocks: Array<IUserBase> = user_mocks.successes.slice(0, 10);
 
 describe('Auth::routes', () => {
     let sdk: ITestSDK, app: Server;
@@ -26,7 +29,7 @@ describe('Auth::routes', () => {
         series([
             cb => tearDownConnections(c.connections, cb),
             cb => strapFramework(Object.assign({}, strapFrameworkKwargs, {
-                models_and_routes: user_models_and_routes,
+                models_and_routes: models_and_routes,
                 createSampleData: false,
                 start_app: false,
                 use_redis: true,
@@ -46,14 +49,14 @@ describe('Auth::routes', () => {
     after(done => tearDownConnections(c.connections, done));
 
     describe('/api/auth', () => {
-        beforeEach(done => sdk.unregister_all(user_mocks.successes, () => done()));
-        afterEach(done => sdk.unregister_all(user_mocks.successes, () => done()));
+        beforeEach(done => sdk.unregister_all(mocks, () => done()));
+        afterEach(done => sdk.unregister_all(mocks, () => done()));
 
         it('POST should login user', done => {
             sdk = <ITestSDK>sdk;
             series([
-                    cb => sdk.register(user_mocks.successes[1], cb),
-                    cb => sdk.login(user_mocks.successes[1], cb)
+                    cb => sdk.register(mocks[1], cb),
+                    cb => sdk.login(mocks[1], cb)
                 ],
                 done
             );
@@ -61,8 +64,8 @@ describe('Auth::routes', () => {
 
         it('DELETE should logout user', done => {
             waterfall([
-                    cb => sdk.register(user_mocks.successes[1], err => cb(err)),
-                    cb => sdk.login(user_mocks.successes[1], (err, res) =>
+                    cb => sdk.register(mocks[1], err => cb(err)),
+                    cb => sdk.login(mocks[1], (err, res) =>
                         err ? cb(err) : cb(null, res.body.access_token)
                     ),
                     (access_token, cb) =>

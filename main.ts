@@ -5,22 +5,14 @@ import {createLogger} from 'bunyan';
 import {trivial_merge, uri_to_config, populateModelRoutes, IModelRoute} from 'nodejs-utils';
 import {SampleData} from './test/SampleData';
 import {strapFramework, IStrapFramework} from 'restify-utils';
+import {Server} from 'restify';
 
 export const package_ = require('./package');
 export const logger = createLogger({
     name: 'main'
 });
 
-if (!process.env.NO_DEBUG) {
-    var i = {};
-    Object.keys(process.env)
-        .sort()
-        .forEach(function (k) {
-            i[k] = process.env[k];
-        });
-    logger.info(JSON.stringify(i, null, 4));
-    logger.info('------------');
-}
+process.env.NO_DEBUG || logger.info(Object.keys(process.env).sort().map(k => ({[k]: process.env[k]})));
 
 export interface IObjectCtor extends ObjectConstructor {
     assign(target: any, ...sources: any[]): any;
@@ -32,7 +24,7 @@ declare var Object: IObjectCtor;
 const db_uri: string = process.env.RDBMS_URI || process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 
-export const waterline_config = {
+export const waterline_config = Object.freeze({
     /* TODO: Put this all in tiered environment-variable powered .json file */
     adapters: {
         url: db_uri,
@@ -53,7 +45,7 @@ export const waterline_config = {
             "user": "postgres",
         })
     }
-};
+});
 
 export const all_models_and_routes: IModelRoute = populateModelRoutes('.');
 
@@ -87,7 +79,9 @@ export const strapFrameworkKwargs: IStrapFramework = Object.freeze(<IStrapFramew
 
 if (require.main === module) {
     strapFramework(Object.assign({
-        start_app: true, callback: (_app, _connections: Connection[], _collections: Collection[]) =>
+        start_app: true, callback: (err, _app: Server, _connections: Connection[], _collections: Collection[]) => {
+            if (err) throw err;
             c.collections = _collections
+        }
     }, strapFrameworkKwargs));
 }

@@ -6,10 +6,10 @@ import {sanitiseSchema} from 'nodejs-utils';
 import {fmtError} from 'restify-errors';
 import * as chaiJsonSchema from 'chai-json-schema';
 import {cb} from '../../share_interfaces.d';
-import {IMessage} from '../../../api/message/models.d';
+import {IMessageBase} from '../../../api/message/models.d';
 import {User} from '../../../api/user/models';
 
-const msg_schema = sanitiseSchema(require('./../user/schema.json'), User._omit);
+const user_schema = sanitiseSchema(require('./../user/schema.json'), User._omit);
 const message_schema = require('./schema.json');
 
 chai.use(chaiJsonSchema);
@@ -18,7 +18,7 @@ export class MessageTestSDK {
     constructor(public app) {
     }
 
-    create(access_token: string, msg: IMessage, cb: cb) {
+    create(access_token: string, msg: IMessageBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `create` must be defined'));
         else if (!msg) return cb(new TypeError('`msg` argument to `create` must be defined'));
 
@@ -44,7 +44,7 @@ export class MessageTestSDK {
             });
     }
 
-    getAll(access_token: string, msg: IMessage, cb: cb) {
+    getAll(access_token: string, msg: IMessageBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `getAll` must be defined'));
         else if (!msg) return cb(new TypeError('`msg` argument to `getAll` must be defined'));
 
@@ -64,7 +64,7 @@ export class MessageTestSDK {
                     expect(res.body.messages).to.be.instanceOf(Array);
                     res.body.messages.map(msg => {
                         expect(msg).to.be.an('object');
-                        expect(msg).to.be.jsonSchema(msg_schema);
+                        expect(msg).to.be.jsonSchema(message_schema);
                     });
                 } catch (e) {
                     err = <Chai.AssertionError>e;
@@ -74,7 +74,7 @@ export class MessageTestSDK {
             })
     }
 
-    retrieve(access_token: string, msg: IMessage, cb: cb) {
+    retrieve(access_token: string, msg: IMessageBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `retrieve` must be defined'));
         else if (!msg) return cb(new TypeError('`msg` argument to `retrieve` must be defined'));
 
@@ -87,9 +87,6 @@ export class MessageTestSDK {
                 else if (res.error) return cb(res.error);
                 try {
                     expect(res.body).to.be.an('object');
-                    Object.keys(msg).map(
-                        attr => expect(msg[attr] === res.body[attr])
-                    );
                     expect(res.body).to.be.jsonSchema(message_schema);
                 } catch (e) {
                     err = <Chai.AssertionError>e;
@@ -99,22 +96,28 @@ export class MessageTestSDK {
             })
     }
 
-    update(access_token: string, msg: IMessage, cb: cb) {
+    update(access_token: string, initial_msg: IMessageBase,
+           updated_msg: {message: string, uuid?: string, to?: string}, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `update` must be defined'));
-        else if (!msg) return cb(new TypeError('`msg` argument to `update` must be defined'));
+        else if (!initial_msg) return cb(new TypeError('`initial_msg` argument to `update` must be defined'));
+        else if (!updated_msg) return cb(new TypeError('`updated_msg` argument to `update` must be defined'));
+        else if (updated_msg.uuid !== initial_msg.uuid)
+            return cb(new ReferenceError(`${initial_msg.uuid} != ${updated_msg.uuid} (\`uuid\`s between msgs)`));
+        else if (updated_msg.to !== undefined && updated_msg.to !== initial_msg.to)
+            return cb(new ReferenceError(`${initial_msg.to} != ${updated_msg.to} (\`to\` between msgs)`));
 
         supertest(this.app)
-            .put(`/api/message/${msg.to}/${msg.uuid}`)
+            .put(`/api/message/${initial_msg.to}/${initial_msg.uuid}`)
             .set('Connection', 'keep-alive')
             .set('X-Access-Token', access_token)
-            .send(msg)
+            .send(updated_msg)
             .end((err, res: Response) => {
                 if (err) return cb(err);
                 else if (res.error) return cb(res.error);
                 try {
                     expect(res.body).to.be.an('object');
-                    Object.keys(msg).map(
-                        attr => expect(msg[attr] === res.body[attr])
+                    Object.keys(updated_msg).map(
+                        attr => expect(updated_msg[attr]).to.be.equal(res.body[attr])
                     );
                     expect(res.body).to.be.jsonSchema(message_schema);
                 } catch (e) {
@@ -125,7 +128,7 @@ export class MessageTestSDK {
             })
     }
 
-    destroy(access_token: string, msg: IMessage, cb: cb) {
+    destroy(access_token: string, msg: IMessageBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `destroy` must be defined'));
         else if (!msg) return cb(new TypeError('`msg` argument to `destroy` must be defined'));
 
@@ -137,11 +140,7 @@ export class MessageTestSDK {
                 if (err) return cb(err);
                 else if (res.error) return cb(res.error);
                 try {
-                    expect(res.body).to.be.an('object');
-                    Object.keys(msg).map(
-                        attr => expect(msg[attr] === res.body[attr])
-                    );
-                    expect(res.body).to.be.jsonSchema(message_schema);
+                    expect(res.status).to.be.equal(204);
                 } catch (e) {
                     err = <Chai.AssertionError>e;
                 } finally {

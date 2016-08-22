@@ -3,10 +3,13 @@ import {IMessage} from './models.d';
 export const Message = {
     identity: 'message_tbl',
     connection: 'postgres',
-    _omit: ['uuid'],
+    _omit: [/*'uuid'*/],
     beforeCreate: function (msg: IMessage, next) {
-        msg.createdAt = new Date();
-        msg.uuid = `${msg.from}::${msg.to}::${msg.createdAt}`;
+        if (msg.createdAt === undefined || msg.uuid === undefined) {
+            msg.createdAt = new Date();
+            msg.uuid = `${msg.from}::${msg.to}::${msg.createdAt.toISOString()}`;
+        }
+        // TODO: Date validation (is provided date within <threshold> of server date?)
         next();
     },
     attributes: {
