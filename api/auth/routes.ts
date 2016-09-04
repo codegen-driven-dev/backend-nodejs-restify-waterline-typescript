@@ -36,7 +36,7 @@ export function logout(app: restify.Server, namespace: string = ""): void {
     app.del(namespace, has_auth('login'),
         function (req: restify.Request, res: restify.Response, next: restify.Next) {
             AccessToken().logout(
-                {access_token: req.headers['x-access-token']}, (error) => {
+                {access_token: <string>req.headers['x-access-token']}, (error) => {
                     if (error) res.json(400, error);
                     else res.send(204);
                     return next();

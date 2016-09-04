@@ -1,15 +1,18 @@
 import {series, waterfall} from 'async';
 import {IModelRoute} from 'nodejs-utils';
 import {strapFramework} from 'restify-utils';
+import {Server} from 'restify';
+import {Collection, Connection} from 'waterline';
+import {expect} from 'chai';
 import {ITestSDK} from './auth_test_sdk.d';
 import {all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c} from './../../../main';
 import {AuthTestSDK} from './../auth/auth_test_sdk';
 import {AccessToken} from './../../../api/auth/models';
 import {user_mocks} from './../user/user_mocks';
 import {tearDownConnections} from '../../shared_tests';
-import {Collection, Connection} from 'waterline';
-import {Server} from 'restify';
 import {IUserBase} from '../../../api/user/models.d';
+import IAssertionError = Chai.AssertionError;
+
 
 declare var Object: IObjectCtor;
 
@@ -53,12 +56,33 @@ describe('Auth::routes', () => {
         afterEach(done => sdk.unregister_all(mocks, () => done()));
 
         it('POST should login user', done => {
-            sdk = <ITestSDK>sdk;
             series([
                     cb => sdk.register(mocks[1], cb),
                     cb => sdk.login(mocks[1], cb)
                 ],
                 done
+            );
+        });
+
+        it('POST should fail to register user', done => {
+            series([
+                    cb => sdk.register(mocks[2], cb),
+                    cb => sdk.register(mocks[2], cb)
+                ],
+                err => {
+                    if (err) {
+                        const expected_err = 'duplicate key value violates unique constraint';
+                        try {
+                            expect(err.message).to.contain(expected_err);
+                            err = null;
+                        } catch (e) {
+                            err = <IAssertionError>e;
+                        } finally {
+                            done(err);
+                        }
+                    }
+                    return done();
+                }
             );
         });
 

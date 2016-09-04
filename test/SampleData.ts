@@ -109,7 +109,7 @@ export class SampleData {
             callback => this.login(callback),
         ], (err, res: Array<IncomingMessageF>) => {
             if (err) return cb(err);
-            else if (res[1].headers) this.token = res[1].headers['x-access-token'];
+            else if (res[1].headers) this.token = <string>res[1].headers['x-access-token'];
             return cb(err, this.token);
         });
     }
