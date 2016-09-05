@@ -6,8 +6,8 @@ REST API backend written on Node.JS in TypeScript with restify and waterline
 
 ## Install prerequisites
 
-  0. node & npm (tested with node v4 and npm v3.3.4 on Ubuntu 15.04 x64)
-  1. Run: `npm install -g tsd typescript`
+  0. node & npm (tested with node v4 and npm v6.5.0 on Ubuntu 15.04 x64)
+  1. Run: `npm install -g tsc typings`
   2. `cd` to directory you've cloned this repo into
   3. Run: `typings install`
   4. Run: `npm install`
@@ -21,11 +21,15 @@ Or:
 
     npm start
 
-## Misc
+## Miscellaneous
+
+Clone [backend-nodejs-restify-waterline-typescript](https://github.com/codegen-driven-dev/backend-nodejs-restify-waterline-typescript) one dir above where this repo was cloned, then synchronise with:
+
+    find -type f -not -name "*.ts" -and -not -path "./.git/*" -and -not -path "./node-modules/*" -and -not -name '*.map' -and -not -name 'package.json' -and -not -name '.gitignore' | cpio -pdamv ../backend-nodejs-restify-waterline-typescript-dist
 
 ### Cleanup compiled output
 
-When not add *.js to `.gitignore`, clean out compiled js with this GNU findutils solution:
+When not adding '*.js' to `.gitignore`, clean out compiled js with this GNU findutils solution:
 
     find -name '*.js.map' -type f -exec bash -c 'rm "${1}" "${1%????}"' bash {} \;
 

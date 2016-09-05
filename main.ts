@@ -2,7 +2,7 @@ import * as redis from 'redis';
 import {Collection, Connection} from 'waterline';
 import * as waterline_postgres from 'waterline-postgresql';
 import {createLogger} from 'bunyan';
-import {trivial_merge, uri_to_config, populateModelRoutes, IModelRoute} from 'nodejs-utils';
+import {uri_to_config, populateModelRoutes, IModelRoute} from 'nodejs-utils';
 import {SampleData} from './test/SampleData';
 import {strapFramework, IStrapFramework} from 'restify-utils';
 import {Server} from 'restify';
@@ -31,19 +31,17 @@ export const waterline_config = Object.freeze({
         postgres: waterline_postgres
     },
     defaults: {
-        migrate: 'create',
+        migrate: 'create'
     },
     connections: {
-        postgres: trivial_merge({
-            adapter: 'postgres'
-        }, !process.env.DOKKU_POSTGRES_REST_API_DB_PORT_5432_TCP_ADDR ?
-            uri_to_config(db_uri) : {
-            "database": db_uri.substr(db_uri.lastIndexOf('/') + 1),
-            "host": process.env.DOKKU_POSTGRES_REST_API_DB_PORT_5432_TCP_ADDR,
-            "identity": "postgres",
-            "password": process.env.DOKKU_POSTGRES_REST_API_DB_ENV_POSTGRES_PASSWORD,
-            "user": "postgres",
-        })
+        postgres: {
+            adapter: 'postgres',
+            connection: uri_to_config(db_uri),
+            pool: {
+                min: 2,
+                max: 20
+            }
+        }
     }
 });
 
