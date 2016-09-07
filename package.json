@@ -1,37 +1,38 @@
 {
-    "name": "restify_waterline_scaffold",
-    "version": "0.0.8-alpha",
-    "description": "Simple baseline scaffold to get you started using Restify and Waterline with TypeScript.",
-    "main": "main.js",
-    "author": "Samuel Marks <samuelmarks@gmail.com>",
-    "repository": {
-        "url": "https://github.com/SamuelMarks/restify_waterline_scaffold"
-    },
-    "license": "Apache-2.0",
-    "scripts": {
-        "start": "node main.js",
-        "test": "mocha test --recursive"
-    },
-    "dependencies": {
-        "async-es": "^2.0.1",
-        "chai": "^3.5.0",
-        "chai-json-schema": "^1.2.0",
-        "faker": "^3.1.0",
-        "hiredis": "^0.5.0",
-        "mocha": "^3.0.2",
-        "node-uuid": "^1.4.7",
-        "nodejs-utils": "https://api.github.com/repos/SamuelMarks/nodejs-utils-dist/tarball",
-        "pg": "^4.5.5",
-        "redis": "^2.6.2",
-        "restify": "^4.1.1",
-        "restify-errors": "https://api.github.com/repos/SamuelMarks/restify-errors-dist/tarball",
-        "restify-utils": "https://api.github.com/repos/SamuelMarks/restify-utils-dist/tarball",
-        "restify-validators": "https://api.github.com/repos/SamuelMarks/restify-validators-dist/tarball",
-        "supertest": "^2.0.0",
-        "ts-node": "^1.0.0",
-        "tv4": "^1.2.7",
-        "typescript": "^1.8.10",
-        "waterline": "^0.12.2",
-        "waterline-postgresql": "^0.14.8"
-    }
+  "name": "restify_waterline_scaffold",
+  "version": "0.0.8",
+  "description": "Simple baseline scaffold to get you started using Restify and Waterline with TypeScript.",
+  "main": "main.js",
+  "author": "Samuel Marks <samuelmarks@gmail.com>",
+  "repository": {
+    "url": "https://github.com/SamuelMarks/restify_waterline_scaffold"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "node main.js | node_modules/bunyan/bin/bunyan",
+    "test": "mocha test --recursive"
+  },
+  "dependencies": {
+    "async-es": "^2.0.1",
+    "chai": "^3.5.0",
+    "chai-json-schema": "^1.2.0",
+    "faker": "^3.1.0",
+    "hiredis": "^0.5.0",
+    "mocha": "^3.0.2",
+    "node-uuid": "^1.4.7",
+    "nodejs-utils": "https://api.github.com/repos/SamuelMarks/nodejs-utils-dist/tarball",
+    "pg": "^4.5.5",
+    "redis": "^2.6.2",
+    "restify": "^4.1.1",
+    "restify-errors": "https://api.github.com/repos/SamuelMarks/restify-errors-dist/tarball",
+    "restify-utils": "https://api.github.com/repos/SamuelMarks/restify-utils-dist/tarball",
+    "restify-validators": "https://api.github.com/repos/SamuelMarks/restify-validators-dist/tarball",
+    "supertest": "^2.0.0",
+    "ts-node": "^1.0.0",
+    "tv4": "^1.2.7",
+    "typescript": "^1.8.10",
+    "waterline": "^0.12.2",
+    "waterline-postgresql": "^0.14.8",
+    "bunyan": "^1.8.1"
+  }
 }

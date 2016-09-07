@@ -1,5 +1,7 @@
 import {v4 as uuid_v4} from 'node-uuid';
 import {redis_cursors} from './../../main';
+import {NotFoundError, GenericError} from 'restify-errors';
+import {RestError} from 'restify';
 
 export const AccessToken = () => {
     const redis = redis_cursors.redis;
@@ -7,7 +9,7 @@ export const AccessToken = () => {
         _type: 'redis',
         findOne: (access_token, cb) => redis.get(access_token, (err, user_id) => {
             if (err) return cb(err);
-            else if (!user_id) return cb(new TypeError('AccessToken not found'));
+            else if (!user_id) return cb(new NotFoundError('AccessToken'));
             return cb(void 0, user_id)
         }),
         deleteOne: (access_token) => redis.del(access_token),
@@ -20,7 +22,7 @@ export const AccessToken = () => {
             return new_key;
         },
         logout: function logout(redis) {
-            return (id: { user_id?: string, access_token?: string }, cb: (err?: Error|string|{}) => void) => {
+            return (id: { user_id?: string, access_token?: string }, cb: (err?: Error|RestError) => void) => {
                 if (id.user_id)
                 // TODO: Rewrite this in Lua [maybe?]
                     redis.smembers(id.user_id, (err, res: any[]) => {
@@ -30,28 +32,40 @@ export const AccessToken = () => {
                         res.forEach(token => t.del(token, (e, r) => {
                             if (e) errors.push(e);
                         }));
-                        if (errors.length) return cb(JSON.stringify(errors));
+                        if (errors.length)
+                            return cb(new GenericError({
+                                statusCode: 400,
+                                error: 'LogoutErrors',
+                                error_message: JSON.stringify(errors)
+                            }));
                         t.del(id.user_id, (e, r) => {
                             if (e) errors.push(e);
                         });
                         t.exec();
-                        if (errors.length) return cb(JSON.stringify(errors));
+                        if (errors.length)
+                            return cb(new GenericError({
+                                statusCode: 400,
+                                error: 'LogoutErrors',
+                                error_message: JSON.stringify(errors)
+                            }));
                         return cb(null);
                     });
                 else if (id.access_token)
                     redis.get(id.access_token, (err, user_id) => {
                         if (err) return cb(err);
-                        else if (!user_id) return cb({
+                        else if (!user_id) return cb(new GenericError({
+                            statusCode: 410,
                             error: 'AlreadyDone',
                             error_message: 'User already logged out'
-                        });
+                        }));
                         return logout(redis)({user_id: user_id}, cb);
                     });
                 else
-                    return cb({
+                    return cb(new GenericError({
+                        statusCode: 400,
                         error: 'ConstraintError',
                         error_message: "Can't logout without user_id or access token"
-                    });
+                    }));
             }
         }(redis)
     }
