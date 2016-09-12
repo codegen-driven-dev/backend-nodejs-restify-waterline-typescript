@@ -21,7 +21,7 @@ export function login(app: restify.Server, namespace: string = ""): void {
                     }, (err: any, user) =>
                         cb(err ? err : !user ? new NotFoundError('User') : null)
                 ),
-                cb => cb(null, AccessToken().add(req.body.email, 'login'))
+                cb => AccessToken().add(req.body.email, 'login', cb)
             ], (error: any, access_token: string) => {
                 if (error) return next(fmtError(error));
                 res.setHeader('X-Access-Token', access_token);
@@ -33,10 +33,10 @@ export function login(app: restify.Server, namespace: string = ""): void {
 }
 
 export function logout(app: restify.Server, namespace: string = ""): void {
-    app.del(namespace, has_auth('login'),
+    app.del(namespace, has_auth(),
         function (req: restify.Request, res: restify.Response, next: restify.Next) {
             AccessToken().logout(
-                {access_token: <string>req.headers['x-access-token']}, (error) => {
+                {access_token: <string>req.headers['x-access-token']}, error => {
                     if (error) res.json(400, error);
                     else res.send(204);
                     return next();

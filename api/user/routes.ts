@@ -20,9 +20,13 @@ export function create(app: restify.Server, namespace: string = ""): void {
             User.create(req.body).exec((error, user: IUser) => {
                 if (error) return next(fmtError(error));
                 else if (!user) return next(NotFoundError('User'));
-                res.setHeader('X-Access-Token', AccessToken().add(req.body.email, 'login'));
-                res.json(201, user);
-                return next();
+
+                AccessToken().add(req.body.email, 'login', (err, access_token) => {
+                    if (err) return next(fmtError(err));
+                    res.setHeader('X-Access-Token', access_token);
+                    res.json(201, user);
+                    return next();
+                });
             });
         }
     )
