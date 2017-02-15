@@ -71,10 +71,10 @@ export function update(app: restify.Server, namespace: string = ""): void {
                         return cb(err, user)
                     }),
                 (user, cb) =>
-                    User.update(user, req.body, (e, r: IUser) => cb(e, r[0]))
-            ], (error, result) => {
+                    User.update(user, req.body, (err, updated_users: IUser[]) => cb(err, updated_users[0]))
+            ], (error, updated_user) => {
                 if (error) return next(fmtError(error));
-                res.json(200, result);
+                res.json(200, updated_user);
                 return next()
             });
         }

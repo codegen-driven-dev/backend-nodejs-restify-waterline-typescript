@@ -20,7 +20,7 @@ const models_and_routes: IModelRoute = {
     auth: all_models_and_routes['auth'],
 };
 
-process.env.NO_SAMPLE_DATA = true;
+process.env['NO_SAMPLE_DATA'] = 'true';
 
 const mocks: Array<IUserBase> = user_mocks.successes.slice(10, 20);
 

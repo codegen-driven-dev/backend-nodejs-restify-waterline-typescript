@@ -12,7 +12,7 @@ export const logger = createLogger({
     name: 'main'
 });
 
-process.env.NO_DEBUG || logger.info(Object.keys(process.env).sort().map(k => ({[k]: process.env[k]})));
+process.env['NO_DEBUG'] || logger.info(Object.keys(process.env).sort().map(k => ({[k]: process.env[k]})));
 
 export interface IObjectCtor extends ObjectConstructor {
     assign(target: any, ...sources: any[]): any;
@@ -21,7 +21,7 @@ export interface IObjectCtor extends ObjectConstructor {
 declare var Object: IObjectCtor;
 
 // Database waterline_config
-const db_uri: string = process.env.RDBMS_URI || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const db_uri: string = process.env['RDBMS_URI'] || process.env['DATABASE_URL'] || process.env['POSTGRES_URL'];
 
 
 export const waterline_config = Object.freeze({

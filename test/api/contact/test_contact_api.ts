@@ -5,29 +5,29 @@ import {all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c} from './../
 import {tearDownConnections} from '../../shared_tests';
 import {Collection, Connection} from 'waterline';
 import {Server} from 'restify';
-import {MessageTestSDK} from './message_test_sdk';
+import {AddressBookTestSDK} from './contact_test_sdk';
 import {user_mocks} from '../user/user_mocks';
 import {ITestSDK} from '../auth/auth_test_sdk.d';
 import {AuthTestSDK} from '../auth/auth_test_sdk';
 import {IUser, IUserBase} from '../../../api/user/models.d';
 import {Response} from 'supertest';
-import {message_mocks} from './message_mocks';
-import {IMessageBase} from '../../../api/message/models.d';
+import {contact_mocks} from './contact_mocks';
+import {IContactBase} from '../../../api/contact/models.d';
 
 declare var Object: IObjectCtor;
 
 const models_and_routes: IModelRoute = {
     user: all_models_and_routes['user'],
     auth: all_models_and_routes['auth'],
-    message: all_models_and_routes['message']
+    contact: all_models_and_routes['contact']
 };
 
 process.env['NO_SAMPLE_DATA'] = 'true';
 const user_mocks_subset: Array<IUserBase> = user_mocks.successes.slice(20, 30);
 
 describe('Message::routes', () => {
-    let sdk: MessageTestSDK, auth_sdk: ITestSDK, app: Server,
-        mocks: { successes: Array<IMessageBase>, failures: Array<{}> };
+    let sdk: AddressBookTestSDK, auth_sdk: ITestSDK, app: Server,
+        mocks: { successes: Array<IContactBase>, failures: Array<{}> };
 
     before('tearDownConnections', done => tearDownConnections(c.connections, done));
 
@@ -36,15 +36,15 @@ describe('Message::routes', () => {
         createSampleData: false,
         start_app: false,
         use_redis: true,
-        app_name: 'test-message-api',
+        app_name: 'test-contact-api',
         callback: (err, _app, _connections: Connection[], _collections: Collection[]) => {
             if (err) return done(err);
             c.connections = _connections;
             c.collections = _collections;
             app = _app;
-            sdk = new MessageTestSDK(app);
+            sdk = new AddressBookTestSDK(app);
             auth_sdk = new AuthTestSDK(app);
-            mocks = message_mocks(user_mocks_subset);
+            mocks = contact_mocks(user_mocks_subset);
             return done();
         }
     })));
@@ -63,34 +63,38 @@ describe('Message::routes', () => {
     after('unregister all users', done => auth_sdk.unregister_all(user_mocks_subset, done));
     after('tearDownConnections', done => tearDownConnections(c.connections, done));
 
-    describe('/api/message/:to', () => {
-        afterEach('deleteMessage', done => sdk.destroy(user_mocks_subset[0].access_token, mocks.successes[0], done));
+    describe('/api/contact', () => {
+        afterEach('deleteContact', done => sdk.destroy(user_mocks_subset[0].access_token, mocks.successes[0], done));
 
-        it('POST should create message', done =>
+        it('POST should create contact', done =>
             sdk.create(user_mocks_subset[0].access_token, mocks.successes[0], done)
         );
 
-        it('GET should get all messages', done => series([
+        it('GET should get all contacts', done => series([
                 cb => sdk.create(user_mocks_subset[0].access_token, mocks.successes[0], cb),
                 cb => sdk.getAll(user_mocks_subset[0].access_token, mocks.successes[0], cb)
             ], done)
         );
     });
 
-    describe('/api/message/:to/:uuid', () => {
-        before('createMessage', done => sdk.create(user_mocks_subset[0].access_token, mocks.successes[1], _ => done()));
-        after('deleteMessage', done => sdk.destroy(user_mocks_subset[0].access_token, mocks.successes[1], done));
+    describe('/api/contact/:email', () => {
+        before('createContact', done => sdk.create(user_mocks_subset[0].access_token, mocks.successes[1], _ => done()));
+        after('deleteContact', done => sdk.destroy(user_mocks_subset[0].access_token, mocks.successes[1], done));
 
-        it('GET should retrieve message', done =>
+        it('GET should retrieve contact', done =>
             sdk.retrieve(user_mocks_subset[0].access_token, mocks.successes[1], done)
         );
 
-        it('PUT should update message', done =>
+        it('PUT should update contact', done =>
             sdk.update(user_mocks_subset[0].access_token, mocks.successes[1],
-                {message: mocks.successes[2].message, uuid: mocks.successes[1].uuid}, done)
+                <IContactBase>{
+                    owner: mocks.successes[1].owner,
+                    email: mocks.successes[1].email,
+                    name: `NAME: ${mocks.successes[1].email}`
+                }, done)
         );
 
-        it('DELETE should destroy message', done =>
+        it('DELETE should destroy contact', done =>
             sdk.destroy(user_mocks_subset[0].access_token, mocks.successes[1], done)
         );
     });

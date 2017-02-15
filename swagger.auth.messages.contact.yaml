@@ -1,0 +1,261 @@
+swagger: '2.0'
+info:
+  title: backend_nodejs_restify_waterline_typescript API
+  description: REST API backend written on Node.JS in TypeScript with restify and waterline
+  version: "1.0.0"
+
+schemes:
+  - http
+  - https
+
+basePath: /api
+produces:
+  - application/json
+paths:
+  /user:
+    get:
+      summary: Retrieve user data
+      security:
+      - X-Access-Token: []
+      tags:
+      - user
+      responses:
+        200:
+          description: User associated with that access token
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create user
+      tags:
+      - user
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        201:
+          description: Created user
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update user
+      tags:
+      - user
+      security:
+      - X-Access-Token: []
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Updated user
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete user
+      tags:
+      - user
+      security:
+      - X-Access-Token: []
+      responses:
+        204:
+          description: User associated with that access token
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth:
+    post:
+      summary: Login user
+      tags:
+      - auth
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        201:
+          description: Created user
+          schema:
+            $ref: '#/definitions/Token'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Logout user
+      tags:
+      - auth
+      security:
+      - X-Access-Token: []
+      responses:
+        204:
+          description: User associated with that access token
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /contact:
+    get:
+      summary: Get all contacts associated with user
+      tags:
+      - contact
+      security:
+      - X-Access-Token: []
+      responses:
+        200:
+          description: Contact list
+          schema:
+            $ref: '#/definitions/Contact__ListRes'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /contact/{name_or_email}:
+    parameters:
+      - in: path
+        name: name_or_email
+        description: name or email of contact to work with
+        required: true
+        type: string
+    post:
+      summary: Create contact
+      tags:
+      - contact
+      security:
+      - X-Access-Token: []
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Contact'
+      responses:
+        201:
+          description: Created contact
+          schema:
+            $ref: '#/definitions/Contact'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      summary: Retrieve contact
+      tags:
+      - contact
+      security:
+      - X-Access-Token: []
+      responses:
+        200:
+          description: Found contact
+          schema:
+            $ref: '#/definitions/Contact'
+        404:
+          description: Contact not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update contact
+      tags:
+      - contact
+      security:
+      - X-Access-Token: []
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Contact'
+      responses:
+        201:
+          description: Created contact
+          schema:
+            $ref: '#/definitions/Contact'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  User:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        format: date-time
+      createdAt:
+        format: date-time
+    required:
+      - email
+      - password
+  Contact:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      owner:
+        type: string
+    required:
+      - email
+      - owner
+  Contact__ListRes:
+    type: object
+    properties:
+      contacts:
+        type: array
+        items:
+          $ref: '#/definitions/Contact'
+      owner:
+        type: string
+    required:
+      - contacts
+      - owner
+  Token:
+    type: object
+    properties:
+       access_token:
+         type: string
+    required:
+      - access_token
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+      error_message:
+        type: string
+securityDefinitions:
+  X-Access-Token:
+    type: apiKey
+    name: X-Access-Token
+    in: header
+    description: Valid Access Token from which user can be found at

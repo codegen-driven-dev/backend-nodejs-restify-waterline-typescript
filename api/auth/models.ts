@@ -1,7 +1,8 @@
 import {v4 as uuid_v4} from 'node-uuid';
-import {redis_cursors} from './../../main';
-import {NotFoundError, GenericError} from 'restify-errors';
+import { redis_cursors } from '../../main';
+import {AuthError, GenericError} from 'restify-errors';
 import {RestError} from 'restify';
+
 
 export const AccessToken = () => {
     const redis = redis_cursors.redis;
@@ -9,7 +10,7 @@ export const AccessToken = () => {
         _type: 'redis',
         findOne: (access_token, cb) => redis.get(access_token, (err, user_id) => {
             if (err) return cb(err);
-            else if (!user_id) return cb(new NotFoundError('AccessToken'));
+            else if (!user_id) return cb(new AuthError('Nothing associated with that access token'));
             return cb(void 0, user_id)
         }),
         deleteOne: (access_token, cb) => redis.del(access_token, cb),
@@ -28,7 +29,7 @@ export const AccessToken = () => {
                         if (err) return cb(err);
                         const t = redis.multi();
                         t.del(...access_tokens);
-                        t.exec(errors =>
+                        t.exec((errors: any[]) =>
                             cb(errors && errors.length ? new GenericError({
                                 statusCode: 400,
                                 error: 'LogoutErrors',
