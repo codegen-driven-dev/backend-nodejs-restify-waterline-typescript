@@ -1,8 +1,7 @@
-import {v4 as uuid_v4} from 'node-uuid';
+import { v4 as uuid_v4 } from 'uuid';
+import { AuthError, GenericError } from 'restify-errors';
+import { RestError } from 'restify';
 import { redis_cursors } from '../../main';
-import {AuthError, GenericError} from 'restify-errors';
-import {RestError} from 'restify';
-
 
 export const AccessToken = () => {
     const redis = redis_cursors.redis;
@@ -22,7 +21,7 @@ export const AccessToken = () => {
             t.exec(err => cb(err, new_key));
         },
         logout: function logout(redis) {
-            return (id: { user_id?: string, access_token?: string }, cb: (err?: Error|RestError) => void) => {
+            return (id: {user_id?: string, access_token?: string}, cb: (err?: Error|RestError) => void) => {
                 if (id.user_id)
                 // TODO: Rewrite this in Lua [maybe?]
                     redis.smembers(id.user_id, (err, access_tokens: string[]) => {
@@ -31,10 +30,10 @@ export const AccessToken = () => {
                         t.del(...access_tokens);
                         t.exec((errors: any[]) =>
                             cb(errors && errors.length ? new GenericError({
-                                statusCode: 400,
-                                error: 'LogoutErrors',
-                                error_message: JSON.stringify(errors)
-                            }) : null)
+                                    statusCode: 400,
+                                    error: 'LogoutErrors',
+                                    error_message: JSON.stringify(errors)
+                                }) : null)
                         );
                     });
                 else if (id.access_token)

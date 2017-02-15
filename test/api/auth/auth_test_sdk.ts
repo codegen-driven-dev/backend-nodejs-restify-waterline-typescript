@@ -1,16 +1,16 @@
 import * as supertest from 'supertest';
-import {Response} from 'supertest';
+import { Response } from 'supertest';
 import * as chai from 'chai';
-import {expect} from 'chai';
-import {map, waterfall, series} from 'async';
-import {sanitiseSchema} from 'nodejs-utils';
-import {fmtError} from 'restify-errors';
+import { expect } from 'chai';
+import { map, waterfall, series } from 'async';
+import { sanitiseSchema } from 'nodejs-utils';
+import { fmtError } from 'restify-errors';
 import * as chaiJsonSchema from 'chai-json-schema';
-import {ITestSDK} from './auth_test_sdk.d';
-import {cb} from '../../share_interfaces.d';
-import {IUser, IUserBase} from '../../../api/user/models.d';
-import {user_mocks} from '../user/user_mocks';
-import {User} from '../../../api/user/models';
+import { ITestSDK } from './auth_test_sdk.d';
+import { cb } from '../../share_interfaces.d';
+import { IUser, IUserBase } from '../../../api/user/models.d';
+import { user_mocks } from '../user/user_mocks';
+import { User } from '../../../api/user/models';
 
 const user_schema = sanitiseSchema(require('./../user/schema.json'), User._omit);
 const auth_schema = require('./schema.json');
@@ -104,7 +104,7 @@ export class AuthTestSDK implements ITestSDK {
             .end(cb)
     }
 
-    unregister(ident: { access_token?: string, user_id?: string }, cb: cb) {
+    unregister(ident: {access_token?: string, user_id?: string}, cb: cb) {
         if (!ident) return cb(new TypeError('ident argument to unregister must be defined'));
 
         if (ident.access_token)

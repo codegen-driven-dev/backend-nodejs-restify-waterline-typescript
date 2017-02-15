@@ -23,7 +23,7 @@ Or:
 
 ## Miscellaneous
 
-Clone [backend-nodejs-restify-waterline-typescript](https://github.com/codegen-driven-dev/backend-nodejs-restify-waterline-typescript) one dir above where this repo was cloned, then synchronise with:
+Clone [backend-nodejs-restify-waterline-typescript-dist](https://github.com/codegen-driven-dev/backend-nodejs-restify-waterline-typescript-dist) one dir above where this repo was cloned, then synchronise with:
 
     find -type f -not -name "*.ts" -and -not -path "./.git/*" -and -not -path "./node-modules/*" -and -not -name '*.map' -and -not -name 'package.json' -and -not -name '.gitignore' | cpio -pdamv ../backend-nodejs-restify-waterline-typescript-dist
 

@@ -1,4 +1,4 @@
-import {IMessage} from './models.d';
+import { IMessage } from './models.d';
 
 export const Message = {
     identity: 'message_tbl',

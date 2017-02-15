@@ -1,11 +1,11 @@
 import * as supertest from 'supertest';
-import {Response} from 'supertest';
-import {expect} from 'chai';
-import {strapFramework} from 'restify-utils';
-import {strapFrameworkKwargs, IObjectCtor} from './../../../main';
-import {Server} from 'restify';
+import { Response } from 'supertest';
+import { expect } from 'chai';
+import { strapFramework } from 'restify-utils';
+import { Server } from 'restify';
+import { strapFrameworkKwargs, IObjectCtor } from '../../../main';
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
 describe('Root::routes', () => {
     let app: Server;

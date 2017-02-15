@@ -1,20 +1,20 @@
-import {series, waterfall} from 'async';
-import {IModelRoute} from 'nodejs-utils';
-import {strapFramework} from 'restify-utils';
-import {Server} from 'restify';
-import {Collection, Connection} from 'waterline';
-import {expect} from 'chai';
-import {ITestSDK} from './auth_test_sdk.d';
-import {all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c} from './../../../main';
-import {AuthTestSDK} from './../auth/auth_test_sdk';
-import {AccessToken} from './../../../api/auth/models';
-import {user_mocks} from './../user/user_mocks';
-import {tearDownConnections} from '../../shared_tests';
-import {IUserBase} from '../../../api/user/models.d';
+import { series, waterfall } from 'async';
+import { IModelRoute } from 'nodejs-utils';
+import { strapFramework } from 'restify-utils';
+import { Server } from 'restify';
+import { Collection, Connection } from 'waterline';
+import { expect } from 'chai';
+import { ITestSDK } from './auth_test_sdk.d';
+import { all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c } from './../../../main';
+import { AuthTestSDK } from './../auth/auth_test_sdk';
+import { AccessToken } from './../../../api/auth/models';
+import { user_mocks } from './../user/user_mocks';
+import { tearDownConnections } from '../../shared_tests';
+import { IUserBase } from '../../../api/user/models.d';
 import IAssertionError = Chai.AssertionError;
 
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
 const models_and_routes: IModelRoute = {
     user: all_models_and_routes['user'],
@@ -69,7 +69,7 @@ describe('Auth::routes', () => {
                     cb => sdk.register(mocks[2], cb),
                     cb => sdk.register(mocks[2], cb)
                 ],
-                err => {
+                (err: Error) => {
                     if (err) {
                         const expected_err = 'duplicate key value violates unique constraint';
                         try {

@@ -1,4 +1,4 @@
-import {IContact} from './models.d';
+import { IContact } from './models.d';
 
 export const Contact = {
     identity: 'contact_tbl',

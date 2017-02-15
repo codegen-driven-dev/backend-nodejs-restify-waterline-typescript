@@ -1,13 +1,14 @@
 import * as restify from 'restify';
-import {Query, WLError} from 'waterline';
-import {has_body, mk_valid_body_mw} from 'restify-validators';
-import {NotFoundError, fmtError} from 'restify-errors';
-import {has_auth} from './../auth/middleware';
-import {IMessage} from './models.d';
-import {c} from '../../main';
+import { Query, WLError } from 'waterline';
+import { has_body, mk_valid_body_mw } from 'restify-validators';
+import { NotFoundError, fmtError } from 'restify-errors';
+import { JsonSchema } from 'tv4';
+import { c } from '../../main';
+import { has_auth } from '../auth/middleware';
+import { IMessage } from './models.d';
 
 
-const message_schema: tv4.JsonSchema = require('./../../test/api/message/schema');
+const message_schema: JsonSchema = require('./../../test/api/message/schema');
 
 export function create(app: restify.Server, namespace: string = ""): void {
     app.post(`${namespace}/:to`, has_auth(), has_body, mk_valid_body_mw(message_schema),

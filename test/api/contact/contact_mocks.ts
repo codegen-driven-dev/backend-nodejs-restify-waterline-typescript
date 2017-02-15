@@ -3,7 +3,7 @@ import {IObjectCtor} from '../../../main';
 import {IUserBase} from '../../../api/user/models.d';
 import {user_mocks} from '../user/user_mocks';
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
 export const contact_mocks: (users: Array<IUserBase>) => { successes: Array<IContactBase>, failures: Array<{}> } =
     (users: Array<IUserBase>) => ({

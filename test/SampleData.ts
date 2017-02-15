@@ -1,9 +1,10 @@
-import {series} from 'async';
-import {RequestOptions, IncomingMessage, ClientRequest, request as http_request} from 'http';
 import * as url from 'url';
-import {trivial_merge} from 'nodejs-utils';
-import {HttpError} from 'restify';
-import {user_mocks} from './api/user/user_mocks';
+import { series } from 'async';
+import { RequestOptions, IncomingMessage, ClientRequest, request as http_request } from 'http';
+import { trivial_merge } from 'nodejs-utils';
+import { HttpError } from 'restify';
+import { AsyncResultCallback } from 'waterline';
+import { user_mocks } from './api/user/user_mocks';
 
 export interface ISampleData {
     token: string;
@@ -128,7 +129,7 @@ export class SampleData {
         );
 
         this.token ? unregisterUser() : this.login((err, access_token: string) =>
-            err ? cb() : unregisterUser()
-        );
+                err ? cb() : unregisterUser()
+            );
     }
 }

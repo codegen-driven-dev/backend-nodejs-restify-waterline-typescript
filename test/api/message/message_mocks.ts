@@ -1,11 +1,11 @@
-import {IMessageBase} from '../../../api/message/models.d';
-import {IObjectCtor} from '../../../main';
-import {IUserBase} from '../../../api/user/models.d';
-import {user_mocks} from '../user/user_mocks';
+import { IMessageBase } from '../../../api/message/models.d';
+import { IObjectCtor } from '../../../main';
+import { IUserBase } from '../../../api/user/models.d';
+import { user_mocks } from '../user/user_mocks';
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
-export const message_mocks: (users: Array<IUserBase>) => { successes: Array<IMessageBase>, failures: Array<{}> } =
+export const message_mocks: (users: Array<IUserBase>) => {successes: Array<IMessageBase>, failures: Array<{}>} =
     (users: Array<IUserBase>) => ({
         "failures": [
             {},

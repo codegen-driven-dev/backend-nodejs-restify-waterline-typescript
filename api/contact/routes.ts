@@ -1,12 +1,13 @@
 import * as restify from 'restify';
-import {Query, WLError} from 'waterline';
-import {NotFoundError, fmtError} from 'restify-errors';
-import {has_body, mk_valid_body_mw} from 'restify-validators';
-import {has_auth} from './../auth/middleware';
-import {IContact} from './models.d';
-import {c} from '../../main';
+import { Query, WLError } from 'waterline';
+import { NotFoundError, fmtError } from 'restify-errors';
+import { has_body, mk_valid_body_mw } from 'restify-validators';
+import { JsonSchema } from 'tv4';
+import { c } from '../../main';
+import { has_auth } from '../auth/middleware';
+import { IContact } from './models.d';
 
-const contact_schema: tv4.JsonSchema = require('./../../test/api/contact/schema');
+const contact_schema: JsonSchema = require('./../../test/api/contact/schema');
 
 export function create(app: restify.Server, namespace: string = ""): void {
     function add_owner_mw(req: restify.Request, res: restify.Response, next: restify.Next) {

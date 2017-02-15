@@ -1,14 +1,15 @@
 import * as restify from 'restify';
-import {waterfall} from 'async';
-import {Query, WLError} from 'waterline';
-import {has_body, mk_valid_body_mw, mk_valid_body_mw_ignore} from 'restify-validators';
-import {NotFoundError, fmtError} from 'restify-errors';
-import {has_auth} from './../auth/middleware';
-import {IContact, IContactBase} from './models.d';
-import {c} from '../../main';
+import { waterfall } from 'async';
+import { Query, WLError } from 'waterline';
+import { has_body, mk_valid_body_mw, mk_valid_body_mw_ignore } from 'restify-validators';
+import { NotFoundError, fmtError } from 'restify-errors';
+import { JsonSchema } from 'tv4';
+import { c } from '../../main';
+import { has_auth } from './../auth/middleware';
+import { IContact, IContactBase } from './models.d';
 
 
-const contact_schema: tv4.JsonSchema = require('./../../test/api/contact/schema');
+const contact_schema: JsonSchema = require('./../../test/api/contact/schema');
 
 export function read(app: restify.Server, namespace: string = ""): void {
     app.get(`${namespace}/:email`, has_auth(),

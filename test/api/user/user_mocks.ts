@@ -1,7 +1,7 @@
-import {IUserBase} from '../../../api/user/models.d';
+import { IUserBase } from '../../../api/user/models.d';
 import * as faker from 'faker';
 
-export const user_mocks: { successes: Array<IUserBase>, failures: Array<{}> } = {
+export const user_mocks: {successes: Array<IUserBase>, failures: Array<{}>} = {
     "failures": [
         {},
         {"email": "foo@bar.com "},

@@ -1,19 +1,19 @@
 import * as supertest from 'supertest';
-import {expect} from 'chai';
-import {series, waterfall} from 'async';
-import {IModelRoute} from 'nodejs-utils';
-import {strapFramework} from 'restify-utils';
-import {all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c} from './../../../main';
-import {AuthTestSDK} from './../auth/auth_test_sdk';
-import {AccessToken} from './../../../api/auth/models';
-import {user_mocks} from './user_mocks';
-import {tearDownConnections} from '../../shared_tests';
-import {Collection, Connection} from 'waterline';
-import {Server} from 'restify';
-import {ITestSDK} from '../auth/auth_test_sdk.d';
-import {IUserBase} from '../../../api/user/models.d';
+import { expect } from 'chai';
+import { series, waterfall } from 'async';
+import { IModelRoute } from 'nodejs-utils';
+import { strapFramework } from 'restify-utils';
+import { Collection, Connection } from 'waterline';
+import { Server } from 'restify';
+import { all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c } from '../../../main';
+import { AuthTestSDK } from './../auth/auth_test_sdk';
+import { AccessToken } from './../../../api/auth/models';
+import { tearDownConnections } from '../../shared_tests';
+import { ITestSDK } from '../auth/auth_test_sdk.d';
+import { IUserBase } from '../../../api/user/models.d';
+import { user_mocks } from './user_mocks';
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
 const models_and_routes: IModelRoute = {
     user: all_models_and_routes['user'],

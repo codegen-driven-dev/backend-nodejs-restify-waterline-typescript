@@ -1,16 +1,17 @@
 import * as restify from 'restify';
-import {waterfall} from 'async';
-import {Query, WLError} from 'waterline';
-import {has_body, mk_valid_body_mw, mk_valid_body_mw_ignore, remove_from_body} from 'restify-validators';
-import {isShallowSubset} from 'nodejs-utils';
-import {NotFoundError, fmtError} from 'restify-errors';
-import {has_auth} from './../auth/middleware';
-import {AccessToken} from './../auth/models';
-import {IUser} from './models.d';
-import {c} from '../../main';
+import { waterfall } from 'async';
+import { Query, WLError } from 'waterline';
+import { has_body, mk_valid_body_mw, mk_valid_body_mw_ignore, remove_from_body } from 'restify-validators';
+import { isShallowSubset } from 'nodejs-utils';
+import { NotFoundError, fmtError } from 'restify-errors';
+import { JsonSchema } from 'tv4';
+import { c } from '../../main';
+import { has_auth } from '../auth/middleware';
+import { AccessToken } from '../auth/models';
+import { IUser } from './models.d';
 
 
-const user_schema: tv4.JsonSchema = require('./../../test/api/user/schema');
+const user_schema: JsonSchema = require('./../../test/api/user/schema');
 
 export function create(app: restify.Server, namespace: string = ""): void {
     app.post(namespace, has_body, mk_valid_body_mw(user_schema),

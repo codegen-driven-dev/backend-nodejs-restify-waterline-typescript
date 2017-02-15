@@ -1,6 +1,6 @@
 import * as restify from 'restify';
-import {AccessToken} from './models';
-import {GenericError} from 'restify-errors';
+import { GenericError } from 'restify-errors';
+import { AccessToken } from './models';
 
 export function has_auth(scope = 'login') {
     return (req: restify.Request, res: restify.Response, next: restify.Next) => {

@@ -1,20 +1,20 @@
-import {series, forEachOf} from 'async';
-import {IModelRoute} from 'nodejs-utils';
-import {strapFramework} from 'restify-utils';
-import {all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c} from './../../../main';
-import {tearDownConnections} from '../../shared_tests';
-import {Collection, Connection} from 'waterline';
-import {Server} from 'restify';
-import {MessageTestSDK} from './message_test_sdk';
-import {user_mocks} from '../user/user_mocks';
-import {ITestSDK} from '../auth/auth_test_sdk.d';
-import {AuthTestSDK} from '../auth/auth_test_sdk';
-import {IUser, IUserBase} from '../../../api/user/models.d';
-import {Response} from 'supertest';
-import {message_mocks} from './message_mocks';
-import {IMessageBase} from '../../../api/message/models.d';
+import { series, forEachOf } from 'async';
+import { IModelRoute } from 'nodejs-utils';
+import { strapFramework } from 'restify-utils';
+import { Collection, Connection } from 'waterline';
+import { Server } from 'restify';
+import { Response } from 'supertest';
+import { all_models_and_routes, strapFrameworkKwargs, IObjectCtor, c } from '../../../main';
+import { IUser, IUserBase } from '../../../api/user/models.d';
+import { IMessageBase } from '../../../api/message/models.d';
+import { tearDownConnections } from '../../shared_tests';
+import { MessageTestSDK } from './message_test_sdk';
+import { user_mocks } from '../user/user_mocks';
+import { ITestSDK } from '../auth/auth_test_sdk.d';
+import { AuthTestSDK } from '../auth/auth_test_sdk';
+import { message_mocks } from './message_mocks';
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
 const models_and_routes: IModelRoute = {
     user: all_models_and_routes['user'],
@@ -27,7 +27,7 @@ const user_mocks_subset: Array<IUserBase> = user_mocks.successes.slice(20, 30);
 
 describe('Message::routes', () => {
     let sdk: MessageTestSDK, auth_sdk: ITestSDK, app: Server,
-        mocks: { successes: Array<IMessageBase>, failures: Array<{}> };
+        mocks: {successes: Array<IMessageBase>, failures: Array<{}>};
 
     before('tearDownConnections', done => tearDownConnections(c.connections, done));
 

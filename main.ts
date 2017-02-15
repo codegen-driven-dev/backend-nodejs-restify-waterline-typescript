@@ -1,11 +1,11 @@
 import * as redis from 'redis';
-import {Collection, Connection} from 'waterline';
+import { Collection, Connection } from 'waterline';
 import * as waterline_postgres from 'waterline-postgresql';
-import {createLogger} from 'bunyan';
-import {uri_to_config, populateModelRoutes, IModelRoute} from 'nodejs-utils';
-import {SampleData} from './test/SampleData';
-import {strapFramework, IStrapFramework} from 'restify-utils';
-import {Server} from 'restify';
+import { createLogger } from 'bunyan';
+import { Server } from 'restify';
+import { uri_to_config, populateModelRoutes, IModelRoute } from 'nodejs-utils';
+import { strapFramework, IStrapFramework } from 'restify-utils';
+import { SampleData } from './test/SampleData';
 
 export const package_ = require('./package');
 export const logger = createLogger({
@@ -18,7 +18,7 @@ export interface IObjectCtor extends ObjectConstructor {
     assign(target: any, ...sources: any[]): any;
 }
 
-declare var Object: IObjectCtor;
+declare const Object: IObjectCtor;
 
 // Database waterline_config
 const db_uri: string = process.env['RDBMS_URI'] || process.env['DATABASE_URL'] || process.env['POSTGRES_URL'];
@@ -47,7 +47,7 @@ export const waterline_config = Object.freeze({
 
 export const all_models_and_routes: IModelRoute = populateModelRoutes('.');
 
-export const redis_cursors: { redis: redis.RedisClient } = {
+export const redis_cursors: {redis: redis.RedisClient} = {
     redis: null
 };
 

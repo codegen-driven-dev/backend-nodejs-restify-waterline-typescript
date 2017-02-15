@@ -1,13 +1,14 @@
 import * as restify from 'restify';
-import {waterfall} from 'async';
-import {Query} from 'waterline';
-import {has_body, mk_valid_body_mw} from 'restify-validators';
-import {NotFoundError, fmtError} from 'restify-errors';
-import {has_auth} from './middleware';
-import {AccessToken} from './models';
-import {c} from '../../main';
+import { waterfall } from 'async';
+import { Query } from 'waterline';
+import { has_body, mk_valid_body_mw } from 'restify-validators';
+import { NotFoundError, fmtError } from 'restify-errors';
+import { JsonSchema } from 'tv4';
+import { c } from '../../main';
+import { has_auth } from './middleware';
+import { AccessToken } from './models';
 
-const user_schema: tv4.JsonSchema = require('./../../test/api/user/schema');
+const user_schema: JsonSchema = require('./../../test/api/user/schema');
 
 export function login(app: restify.Server, namespace: string = ""): void {
     app.post(namespace, has_body, mk_valid_body_mw(user_schema),

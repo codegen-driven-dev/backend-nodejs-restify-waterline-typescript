@@ -1,13 +1,13 @@
 import * as supertest from 'supertest';
-import {Response} from 'supertest';
+import { Response } from 'supertest';
 import * as chai from 'chai';
-import {expect} from 'chai';
-import {sanitiseSchema} from 'nodejs-utils';
-import {fmtError} from 'restify-errors';
+import { expect } from 'chai';
+import { sanitiseSchema } from 'nodejs-utils';
+import { fmtError } from 'restify-errors';
 import * as chaiJsonSchema from 'chai-json-schema';
-import {cb} from '../../share_interfaces.d';
-import {IContactBase} from '../../../api/contact/models.d';
-import {User} from '../../../api/user/models';
+import { cb } from '../../share_interfaces.d';
+import { IContactBase } from '../../../api/contact/models.d';
+import { User } from '../../../api/user/models';
 
 const user_schema = sanitiseSchema(require('./../user/schema.json'), User._omit);
 const contact_schema = require('./schema.json');
