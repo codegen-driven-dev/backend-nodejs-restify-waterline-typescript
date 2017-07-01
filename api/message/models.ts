@@ -2,7 +2,7 @@ import { IMessage } from './models.d';
 
 export const Message = {
     identity: 'message_tbl',
-    connection: 'postgres',
+    connection: 'main_db',
     _omit: [/*'uuid'*/],
     beforeCreate: function (msg: IMessage, next) {
         if (msg.createdAt === undefined || msg.uuid === undefined) {

@@ -1,4 +1,4 @@
-import {Model, Record} from 'waterline';
+import { Model, Record } from 'waterline';
 
 export interface IContact extends Model, Record, IContactBase {
 }

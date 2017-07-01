@@ -3,7 +3,7 @@ import { Response } from 'supertest';
 import { expect } from 'chai';
 import { strapFramework } from 'restify-utils';
 import { Server } from 'restify';
-import { strapFrameworkKwargs, IObjectCtor } from '../../../main';
+import { IObjectCtor, strapFrameworkKwargs } from '../../../main';
 
 declare const Object: IObjectCtor;
 
@@ -39,11 +39,11 @@ describe('Root::routes', () => {
                             expect(res.body).to.have.property('version');
                             expect(res.body.version.split('.').length - 1).to.be.equal(2);
                         } catch (e) {
-                            err = <Chai.AssertionError>e;
+                            err = e as Chai.AssertionError;
                         } finally {
                             done(err);
                         }
-                    })
+                    });
             }
         )
     );

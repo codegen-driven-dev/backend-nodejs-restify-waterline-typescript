@@ -9,16 +9,17 @@ import { cb } from '../../share_interfaces.d';
 import { IContactBase } from '../../../api/contact/models.d';
 import { User } from '../../../api/user/models';
 
+/* tslint:disable:no-var-requires */
 const user_schema = sanitiseSchema(require('./../user/schema.json'), User._omit);
 const contact_schema = require('./schema.json');
 
 chai.use(chaiJsonSchema);
 
-export class AddressBookTestSDK {
+export class ContactTestSDK {
     constructor(public app) {
     }
 
-    create(access_token: string, contact: IContactBase, cb: cb) {
+    public create(access_token: string, contact: IContactBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `create` must be defined'));
         else if (!contact) return cb(new TypeError('`contact` argument to `create` must be defined'));
 
@@ -37,14 +38,14 @@ export class AddressBookTestSDK {
                     expect(res.body).to.be.an('object');
                     expect(res.body).to.be.jsonSchema(contact_schema);
                 } catch (e) {
-                    err = <Chai.AssertionError>e;
+                    err = e as Chai.AssertionError;
                 } finally {
                     cb(err, res);
                 }
             });
     }
 
-    getAll(access_token: string, contact: IContactBase, cb: cb) {
+    public getAll(access_token: string, contact: IContactBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `getAll` must be defined'));
         else if (!contact) return cb(new TypeError('`contact` argument to `getAll` must be defined'));
 
@@ -61,19 +62,19 @@ export class AddressBookTestSDK {
                     expect(res.body).to.have.property('owner');
                     expect(res.body).to.have.property('contacts');
                     expect(res.body.contacts).to.be.instanceOf(Array);
-                    res.body.contacts.map(contact => {
-                        expect(contact).to.be.an('object');
-                        expect(contact).to.be.jsonSchema(contact_schema);
+                    res.body.contacts.map(_contact => {
+                        expect(_contact).to.be.an('object');
+                        expect(_contact).to.be.jsonSchema(contact_schema);
                     });
                 } catch (e) {
-                    err = <Chai.AssertionError>e;
+                    err = e as Chai.AssertionError;
                 } finally {
                     cb(err, res);
                 }
-            })
+            });
     }
 
-    retrieve(access_token: string, contact: IContactBase, cb: cb) {
+    public retrieve(access_token: string, contact: IContactBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `getAll` must be defined'));
         else if (!contact) return cb(new TypeError('`contact` argument to `getAll` must be defined'));
 
@@ -90,20 +91,22 @@ export class AddressBookTestSDK {
                     expect(res.body).to.be.an('object');
                     expect(res.body).to.be.jsonSchema(contact_schema);
                 } catch (e) {
-                    err = <Chai.AssertionError>e;
+                    err = e as Chai.AssertionError;
                 } finally {
                     cb(err, res);
                 }
-            })
+            });
     }
 
-    update(access_token: string, initial_contact: IContactBase,
-           updated_contact: IContactBase, cb: cb) {
+    public update(access_token: string, initial_contact: IContactBase,
+                  updated_contact: IContactBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `update` must be defined'));
         else if (!initial_contact) return cb(new TypeError('`initial_contact` argument to `update` must be defined'));
         else if (!updated_contact) return cb(new TypeError('`updated_contact` argument to `update` must be defined'));
         else if (initial_contact.owner !== updated_contact.owner)
-            return cb(new ReferenceError(`${initial_contact.owner} != ${updated_contact.owner} (\`owner\`s between contacts)`));
+            return cb(new ReferenceError(
+                `${initial_contact.owner} != ${updated_contact.owner} (\`owner\`s between contacts)`)
+            );
 
         supertest(this.app)
             .put(`/api/contact/${initial_contact.email}`)
@@ -120,14 +123,14 @@ export class AddressBookTestSDK {
                     );
                     expect(res.body).to.be.jsonSchema(contact_schema);
                 } catch (e) {
-                    err = <Chai.AssertionError>e;
+                    err = e as Chai.AssertionError;
                 } finally {
                     cb(err, res);
                 }
-            })
+            });
     }
 
-    destroy(access_token: string, contact: IContactBase, cb: cb) {
+    public destroy(access_token: string, contact: IContactBase, cb: cb) {
         if (!access_token) return cb(new TypeError('`access_token` argument to `destroy` must be defined'));
         else if (!contact) return cb(new TypeError('`contact` argument to `destroy` must be defined'));
 
@@ -141,10 +144,10 @@ export class AddressBookTestSDK {
                 try {
                     expect(res.status).to.be.equal(204);
                 } catch (e) {
-                    err = <Chai.AssertionError>e;
+                    err = e as Chai.AssertionError;
                 } finally {
                     cb(err, res);
                 }
-            })
+            });
     }
 }

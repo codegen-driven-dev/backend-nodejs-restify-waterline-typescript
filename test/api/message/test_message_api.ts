@@ -10,7 +10,6 @@ import { IMessageBase } from '../../../api/message/models.d';
 import { tearDownConnections } from '../../shared_tests';
 import { MessageTestSDK } from './message_test_sdk';
 import { user_mocks } from '../user/user_mocks';
-import { ITestSDK } from '../auth/auth_test_sdk.d';
 import { AuthTestSDK } from '../auth/auth_test_sdk';
 import { message_mocks } from './message_mocks';
 
@@ -26,7 +25,7 @@ process.env['NO_SAMPLE_DATA'] = 'true';
 const user_mocks_subset: Array<IUserBase> = user_mocks.successes.slice(20, 30);
 
 describe('Message::routes', () => {
-    let sdk: MessageTestSDK, auth_sdk: ITestSDK, app: Server,
+    let sdk: MessageTestSDK, auth_sdk/*: ITestSDK*/, app: Server,
         mocks: {successes: Array<IMessageBase>, failures: Array<{}>};
 
     before('tearDownConnections', done => tearDownConnections(c.connections, done));
